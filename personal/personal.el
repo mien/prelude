@@ -7,3 +7,11 @@
 (global-set-key (kbd "C->") 'mc/mark-next-like-this)
 (global-set-key (kbd "C-<") 'mc/mark-previous-like-this)
 (global-set-key (kbd "C-c C-<") 'mc/mark-all-like-this)
+
+
+;; theme settings
+(disable-theme 'zenburn)
+
+(prelude-require-package 'color-theme-sanityinc-tomorrow)
+(setq prelude-theme 'sanityinc-tomorrow-eighties)
+(ido-mode 1)

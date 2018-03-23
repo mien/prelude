@@ -15,3 +15,12 @@
 (prelude-require-package 'color-theme-sanityinc-tomorrow)
 (setq prelude-theme 'sanityinc-tomorrow-eighties)
 (ido-mode 1)
+
+
+;; yasnippet
+(add-to-list 'load-path (expand-file-name "yasnippet" prelude-dir))
+(prelude-require-package 'yasnippet)
+(prelude-require-package 'yasnippet-snippets)
+
+(yas-global-mode 1)
+(scroll-bar-mode -1)

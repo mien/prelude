@@ -24,3 +24,9 @@
 
 (yas-global-mode 1)
 (scroll-bar-mode -1)
+
+;; project tree explorer
+
+(prelude-require-package 'neotree)
+(global-set-key [f8] 'neotree-toggle)
+(setq neo-theme (if (display-graphic-p) 'icons 'arrow))

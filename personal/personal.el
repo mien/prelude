@@ -48,22 +48,28 @@
 
 
 ;; org mode settings
+(add-to-list 'package-archives
+             '("org" . "http://orgmode.org/elpa/") t)
+(prelude-require-package 'org)
 
-(defvar org-notes-dir "~/org-notes")
-(defvar org-todays-todo-file-location
-  (concat  org-notes-dir "/todays-task.org"))
+(prelude-require-package 'ox-gfm)
+(eval-after-load "org"
+  '(require 'ox-gfm nil t))
+(defvar org-notes-dir "~/Dropbox/org-notes")
+(defvar org-todays-task-file-location (concat  org-notes-dir "/todays-task.org"))
 (defvar org-notes-file-location (concat  org-notes-dir "/notes.org"))
 (defvar org-journal-file-location (concat  org-notes-dir "/journal.org"))
-(defvar org-blog-idea-file-location (concat  org-notes-dir "/blog-ideas.org"))
+(defvar org-blog-idea-file-location (concat  org-notes-dir "/blog-in-draft.org"))
 (defvar org-archive-file-location (concat  org-notes-dir "/archive.org::"))
 
 ;; overriding org-mode system settings
 (setq org-default-notes-file org-notes-file-location)
-(setq org-agenda-files '("~/org-notes"))
+(setq org-agenda-files '("~/Dropbox/org-notes"))
+(print org-agenda-files)
 (setq org-archive-location org-archive-file-location)
 
 
-(setq org-default-notes-file org-todays-todo-file-location
+(setq org-default-notes-file org-todays-task-file-location
    initial-buffer-choice  org-default-notes-file)
 
 (add-hook 'org-mode-hook
@@ -77,10 +83,9 @@
 
 (setq org-capture-templates
       '(("t" "Todo" entry (file+headline org-todays-task-file-location "Tasks")
-         "* TODO %?\n %i\n %a")
+         "* TODO %?\nEntered on %T"\n)
         ("j" "Journal" entry (file+datetree org-journal-file-location)
          "* %?\nEntered on %T")
-        ("b" "Blog Idea" entry (file org-blog-idea-file-location)
-         "* TODO %? \t%^G\nEntered on %T  %i")
-        ("r" "Research Notes" entry (file org-notes-file-location)
-         "* %? \t%^G\nEntered on %T\n %i")))
+        ("b" "Blog Idea" entry (file+headline org-blog-idea-file-location "ELABORATE")
+         "\n* TODO %?\nEntered on %T\n")
+        ))

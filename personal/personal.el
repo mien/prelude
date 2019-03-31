@@ -163,7 +163,8 @@
 ;;----------------- Email setup ends --------------------
 
 ;;----------------- Python IDE setup --------------------
-
+(setq python-shell-interpreter "/home/munawwarhussain/.pyenv/shims/ipython"
+      python-shell-interpreter-args "-i --simple-prompt")
 (prelude-require-packages '(elpy py-autopep8 epc jedi))
 (elpy-enable)
 

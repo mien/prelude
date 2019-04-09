@@ -17,7 +17,7 @@
 (global-linum-mode t)
 
 (prelude-require-package 'color-theme-sanityinc-tomorrow)
-(setq prelude-theme 'sanityinc-tomorrow-eighties)
+;; (setq prelude-theme 'color-theme-sanityinc-tomorrow-bright)
 (ido-mode 1)
 
 
@@ -35,11 +35,12 @@
 (global-set-key [f8] 'neotree-toggle)
 ;;(setq neo-theme (if (display-graphic-p) 'icons 'arrow))
 
-(setq python-shell-interpreter "ipython" python-shell-interpreter-args "--simple-prompt -i")
+
 
 (add-hook 'markdown-mode-hook (lambda()
                                 (whitespace-mode -1)))
 
+;; ---------------------- ORG MODE START------------------------------------
 (setq org-bullets-bullet-list '("❶" "❷" "❸" "❹" "❺" "❻" "❼" "❽" "❾"
                                 "➀" "➁" "➂" "➃" "➄" "➅" "➆"))
 (global-visual-line-mode 1)
@@ -98,70 +99,7 @@
  '((python . t)))
 (setq org-babel-python-command "python3")
 
-;;----------------- Email setup ------------------------
-(add-to-list 'load-path "/usr/local/share/emacs/site-lisp/mu4e")
-(require 'mu4e)
-`1m
-(setq mu4e-contexts
-      `( ,(make-mu4e-context
-           :name "Gmail"
-           :match-func (lambda (msg) (when msg
-                                       (string-prefix-p "/Gmail" (mu4e-message-field msg :maildir))))
-           :vars '(
-                   (mu4e-trash-folder . "/Gmail/[Gmail].Trash")
-                   (mu4e-refile-folder . "/Gmail/[Gmail].Archive")
-                   ))
-         ))
-
-
-;; I have my "default" parameters from Gmail
-(setq mu4e-sent-folder "/sent"
-      ;; mu4e-sent-messages-behavior 'delete ;; Unsure how this should be configured
-      mu4e-drafts-folder "/drafts"
-      user-mail-address "munawwar.shelia@accionlabs.com"
-      smtpmail-default-smtp-server "smtp.gmail.com"
-      smtpmail-smtp-server "smtp.gmail.com"
-      smtpmail-smtp-service 587)
-
-;; Now I set a list of
-(defvar my-mu4e-account-alist
-  '(("Gmail"
-     (mu4e-sent-folder "/Gmail/sent")
-     (user-mail-address "munawwar.shelia@accionlabs.com")
-     (smtpmail-smtp-user "munawwar.shelia")
-     (smtpmail-local-domain "gmail.com")
-     (smtpmail-default-smtp-server "smtp.gmail.com")
-     (smtpmail-smtp-server "smtp.gmail.com")
-     (smtpmail-smtp-service 587)
-     )
-     ;; Include any other accounts here ...
-    ))
-
-(defun my-mu4e-set-account ()
-  "Set the account for composing a message.
-   This function is taken from:
-     https://www.djcbsoftware.nl/code/mu/mu4e/Multiple-accounts.html"
-  (let* ((account
-    (if mu4e-compose-parent-message
-        (let ((maildir (mu4e-message-field mu4e-compose-parent-message :maildir)))
-    (string-match "/\\(.*?\\)/" maildir)
-    (match-string 1 maildir))
-      (completing-read (format "Compose with account: (%s) "
-             (mapconcat #'(lambda (var) (car var))
-            my-mu4e-account-alist "/"))
-           (mapcar #'(lambda (var) (car var)) my-mu4e-account-alist)
-           nil t nil nil (caar my-mu4e-account-alist))))
-   (account-vars (cdr (assoc account my-mu4e-account-alist))))
-    (if account-vars
-  (mapc #'(lambda (var)
-      (set (car var) (cadr var)))
-        account-vars)
-      (error "No email account found"))))
-(add-hook 'mu4e-compose-pre-hook 'my-mu4e-set-account)
-
-
-;;----------------- Email setup ends --------------------
-
+;; ---------------------------- ORG MODE END ---------------------------
 ;;----------------- Python IDE setup --------------------
 (setq python-shell-interpreter "/home/munawwarhussain/.pyenv/shims/ipython"
       python-shell-interpreter-args "-i --simple-prompt")
@@ -175,7 +113,7 @@
 (require 'py-autopep8)
 (add-hook 'elpy-mode-hook 'py-autopep8-enable-on-save)
 
-(setq elpy-rpc-python-command "~/.pyenv/versions/3.5.5/bin/python3.5")
+(setq elpy-rpc-python-command "/home/munawwarhussain/.pyenv/shims/python3")
 
 ;; Global Jedi config vars
 
@@ -190,21 +128,15 @@ May be necessary for some GUI environments (e.g., Mac OS X)")
 
 (defvar jedi-config:python-module-sentinel "__init__.py")
 
-;; Helper functions
 
-;; Small helper to scrape text from shell output
-(defun get-shell-output (cmd)
-  (replace-regexp-in-string "[ \t\n]*$" "" (shell-command-to-string cmd)))
+;;---------------------------- Python End --------------------------
 
-;; Ensure that PATH is taken from shell
-;; Necessary on some environments without virtualenv
-;; Taken from: http://stackoverflow.com/questions/8606954/path-and-exec-path-set-but-emacs-does-not-find-executable
-
-;; --- ledger mode ---
+;; -------------------------- Ledger Mode ---------------------------
 (require 'ledger-mode)
 
 (add-to-list 'auto-mode-alist '("\\.ledger$" . ledger-mode))
-;;----------------- Python setup end ------------
+
+;; ------------------------------ ledger END-------------------------
 
 ;; -------------- multi term config -------------
 (prelude-require-package 'multi-term)

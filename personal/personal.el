@@ -5,7 +5,7 @@
 (prelude-require-package 'org-bullets)
 ;; When you have an active region that spans multiple lines, the following will add a cursor to each line:
 (global-set-key (kbd "C-S-c C-S-c") 'mc/edit-lines)
-
+(prelude-require-package 'color-theme-sanityinc-tomorrow)
 ;; When you want to add multiple cursors not based on continuous lines, but based on keywords in the buffer, use:
 (global-set-key (kbd "C->") 'mc/mark-next-like-this)
 (global-set-key (kbd "C-<") 'mc/mark-previous-like-this)
@@ -13,20 +13,20 @@
 
 
 ;; general prelude override
-(disable-theme 'zenburn)
+;;(disable-theme 'zenburn)
 (global-linum-mode t)
 
-(prelude-require-package 'color-theme-sanityinc-tomorrow)
+;;(prelude-require-package 'color-theme-sanityinc-tomorrow)
 ;; (setq prelude-theme 'color-theme-sanityinc-tomorrow-bright)
 (ido-mode 1)
 
 
 ;; yasnippet
-(add-to-list 'load-path (expand-file-name "yasnippet" prelude-dir))
-(prelude-require-package 'yasnippet)
-(prelude-require-package 'yasnippet-snippets)
+;;(add-to-list 'load-path (expand-file-name "yasnippet" prelude-dir))
+;;(prelude-require-package 'yasnippet)
+;;(prelude-require-package 'yasnippet-snippets)
 
-(yas-global-mode 1)
+;;(yas-global-mode 1)
 (scroll-bar-mode -1)
 
 ;; project tree explorer
@@ -71,7 +71,7 @@
 
 
 (setq org-default-notes-file org-todays-task-file-location
-   initial-buffer-choice  org-default-notes-file)
+      initial-buffer-choice  org-default-notes-file)
 
 (add-hook 'org-mode-hook
           (lambda()
@@ -100,6 +100,7 @@
 (setq org-babel-python-command "python3")
 
 ;; ---------------------------- ORG MODE END ---------------------------
+
 ;;----------------- Python IDE setup --------------------
 (setq python-shell-interpreter "/home/munawwarhussain/.pyenv/shims/ipython"
       python-shell-interpreter-args "-i --simple-prompt")
@@ -113,7 +114,7 @@
 (require 'py-autopep8)
 (add-hook 'elpy-mode-hook 'py-autopep8-enable-on-save)
 
-(setq elpy-rpc-python-command "/home/munawwarhussain/.pyenv/shims/python3")
+(setq elpy-rpc-python-conmmand "/home/munawwarhussain/.pyenv/shims/python3")
 
 ;; Global Jedi config vars
 
@@ -132,7 +133,7 @@ May be necessary for some GUI environments (e.g., Mac OS X)")
 ;;---------------------------- Python End --------------------------
 
 ;; -------------------------- Ledger Mode ---------------------------
-(require 'ledger-mode)
+(prelude-require-package 'ledger-mode)
 
 (add-to-list 'auto-mode-alist '("\\.ledger$" . ledger-mode))
 
@@ -185,10 +186,56 @@ May be necessary for some GUI environments (e.g., Mac OS X)")
   :type 'alist
   :group 'multi-term)
 
-;; -------------- Multi term config ends  -------------
+;; -------------- Multi term config ends  ----------------
+
+;; --------- [start] C / C++ configuration  --------------
+;; this variables must be set before load helm-gtags
+;; you can change to any prefix key of your choice
+(prelude-require-package 'ggtags)
+(require 'ggtags)
+(add-hook 'c-mode-common-hook
+          (lambda ()
+            (when (derived-mode-p 'c-mode 'c++-mode 'java-mode 'asm-mode)
+              (ggtags-mode 1))))
+
+(dolist (map (list ggtags-mode-map dired-mode-map))
+  (define-key map (kbd "C-c g s") 'ggtags-find-other-symbol)
+  (define-key map (kbd "C-c g h") 'ggtags-view-tag-history)
+  (define-key map (kbd "C-c g r") 'ggtags-find-reference)
+  (define-key map (kbd "C-c g f") 'ggtags-find-file)
+  (define-key map (kbd "C-c g c") 'ggtags-create-tags)
+  (define-key map (kbd "C-c g u") 'ggtags-update-tags)
+  (define-key map (kbd "C-c g a") 'helm-gtags-tags-in-this-function)
+  (define-key map (kbd "M-.") 'ggtags-find-tag-dwim)
+  (define-key map (kbd "M-,") 'pop-tag-mark)
+  (define-key map (kbd "C-c <") 'ggtags-prev-mark)
+  (define-key map (kbd "C-c >") 'ggtags-next-mark))
 
 
-;; --------- pdf config -------------
-(add-hook 'prog-mode-hook 'linum-on)
-(setq-default doc-view-pdfdraw-program "mudraw")
-;;-----------------------------------
+(setq
+ helm-gtags-ignore-case t
+ helm-gtags-auto-update t
+ helm-gtags-use-input-at-cursor t
+ helm-gtags-pulse-at-cursor t
+ helm-gtags-prefix-key "\C-cg"
+ helm-gtags-suggested-key-mapping t
+ )
+
+(prelude-require-package 'helm-gtags)
+(require 'helm-gtags)
+;; Enable helm-gtags-mode
+(add-hook 'dired-mode-hook 'helm-gtags-mode)
+(add-hook 'eshell-mode-hook 'helm-gtags-mode)
+(add-hook 'c-mode-hook 'helm-gtags-mode)
+(add-hook 'c++-mode-hook 'helm-gtags-mode)
+(add-hook 'asm-mode-hook 'helm-gtags-mode)
+
+(define-key helm-gtags-mode-map (kbd "C-c g a") 'helm-gtags-tags-in-this-function)
+(define-key helm-gtags-mode-map (kbd "M-s") 'helm-gtags-select)
+(define-key helm-gtags-mode-map (kbd "M-.") 'helm-gtags-dwim)
+(define-key helm-gtags-mode-map (kbd "M-,") 'helm-gtags-pop-stack)
+(define-key helm-gtags-mode-map (kbd "C-c <") 'helm-gtags-previous-history)
+(define-key helm-gtags-mode-map (kbd "C-c >") 'helm-gtags-next-history)
+
+
+;; ------- [end] c/c++ configuration ---------------------
